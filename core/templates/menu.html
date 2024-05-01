@@ -1,15 +1,32 @@
 {% extends 'base.html' %}
 
 {% block title %}
-
 Menu
-
 {% endblock %}
 
-
 {% block content %}
-
-<div id="menu-container" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-20"></div>
-<h1>Test</h1>
-
+<!-- First div for displaying user posts -->
+<div id="menu-container" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-20">
+    <!-- Loop through posts -->
+    {% for post in posts %}
+        <!-- Individual post card -->
+        <div class="rounded-md bg-white shadow-md overflow-hidden">
+            <!-- User information -->
+            <div class="flex items-center p-4 border-b border-gray-200">
+                <img class="w-10 h-10 rounded-full mr-4" src="{{ post.user.profile_picture.url }}" alt="{{ post.user.username }}">
+                <div>
+                    <h3 class="text-lg font-semibold">{{ post.user.username }}</h3>
+                </div>
+            </div>
+            <!-- Post image -->
+            <img class="w-full" src="{{ post.image.url }}" alt="{{ post.title }}">
+            <!-- Post title -->
+            <div class="p-4">
+                <h3 class="text-lg font-semibold">{{ post.title }}</h3>
+                <!-- Post comments -->
+                <p class="text-gray-700">{{ post.comments }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
 {% endblock %}
