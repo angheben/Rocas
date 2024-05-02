@@ -1,13 +1,16 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, UpdateView, DetailView, CreateView, RedirectView
+from django.views.generic import TemplateView, UpdateView, DeleteView, CreateView, RedirectView, FormView
 from .models import Post
 from django.contrib.auth import logout
 from django.urls import reverse_lazy
-from django.contrib.auth.views import LoginView as BaseLoginView
-from django.contrib.auth.forms import UserCreationForm
+from .forms import SignupForm, LoginForm
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 
-class Menu(TemplateView):
+class MenuView(TemplateView):
+    """
+    This class will serve to display the menu page of the application
+    """
     template_name = "menu.html"
 
     def get_context_data(self, **kwargs):
@@ -18,23 +21,36 @@ class Menu(TemplateView):
         return context
 
 
-class Update(UpdateView):
+class UpdatePostView(UpdateView):
+    """
+    This class will serve users to update information in their posts
+    """
     template_name = "update.html"
     model = Post
     fields = ['image', 'title', 'content']
 
 
-class Delete(DetailView):
+class DeletePostView(DeleteView):
+    """
+    This class will serve to delete posts and redirect users to the menu
+    """
     template_name = "delete.html"
     model = Post
+    url = reverse_lazy("menu")
 
 
-class Create(CreateView):
+class CreatePostView(CreateView):
+    """
+    This class will serve users to create new posts
+    """
     template_name = "create.html"
     models = Post
 
 
 class LogoutView(RedirectView):
+    """
+    This class serves to users logout of the blog and redirect to the menu page
+    """
     url = reverse_lazy('menu')
 
     def get(self, request, *args, **kwargs):
@@ -42,12 +58,54 @@ class LogoutView(RedirectView):
         return super().get(request, *args, **kwargs)
 
 
-class LoginView(BaseLoginView):
+class LoginView(FormView):
+    """
+    This class serves to manage the login page
+    """
     template_name = "login"
+    form_class = LoginForm
+    success_url = reverse_lazy('menu')
+
+    def form_valid(self, form):
+        """
+        This function is called when the user do the login correctly
+        """
+        messages.success(self.request, message="Login successful")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """
+        This function is called when the user do the login incorrectly
+        """
+        messages.error(self.request, message="Invalid username or password")
+        return super().form_invalid(form)
 
 
-class SignUpView(CreateView):
+class SignUpView(FormView):
+    """
+    This class serves to manage the signup page
+    """
     template_name = "signup.html"
-    form_class = UserCreationForm
+    form_class = SignupForm
     success_url = reverse_lazy('login')
+
+    def form_valid(self, form):
+        """
+        This function is called when the user do the login correctly
+        """
+
+        username = form.cleaned_data['username']
+        email = form.cleaned_data['email']
+        password = form.cleaned_data['password1']
+        User.objects.create_user(username=username, email=email, password=password, is_active=True)
+
+        messages.success(self.request, message="Login successful")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        """
+        This function is called when the user do the login incorrectly
+        """
+        messages.error(self.request, message="Invalid information")
+        return super().form_invalid(form)
 
