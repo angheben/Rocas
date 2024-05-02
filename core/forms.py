@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from .models import Post
 
 
 class LoginForm(AuthenticationForm):
@@ -35,3 +36,19 @@ class SignupForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'image', 'content']
+
+    title = forms.CharField(widget=forms.TextInput(attrs={
+        'placeholder': 'Title',
+        'class': 'w-full py-4 px-6 rounded-xl'
+    }))
+    image = forms.ImageField()
+    content = forms.CharField(widget=forms.Textarea(attrs={
+        'placeholder': 'Content',
+        'class': 'w-full py-4 px-6 rounded-xl'
+    }))

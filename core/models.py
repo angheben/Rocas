@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from stdimage.models import StdImageField
 
 
 class UserProfile(models.Model):
     user = models.CharField(User, max_length=30)
-    profile = models.ImageField(name="profile", upload_to="profile_pictures") # I need to adjust the size of the image here
+    profile = StdImageField(verbose_name='Image', upload_to='media', variations={
+                            "thumb": {"width": 100, 'height': 100, 'crop': False}})
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -13,9 +15,17 @@ class UserProfile(models.Model):
 
 class Post(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="posts")
-    image = models.ImageField(name="image", upload_to="post_pictures", null=True, blank=True)
+    image = StdImageField(verbose_name='Image', upload_to='media', variations={
+                            "thumb": {"width": 225, 'height': 225, 'crop': False}})
     title = models.CharField(name="title", max_length=100)
     content = models.TextField(name="content", null=True, blank=True)
+    created_on = models.DateTimeField(auto_now_add=True)
+
+
+class Draft(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='draft_images')
+    content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
 
 
