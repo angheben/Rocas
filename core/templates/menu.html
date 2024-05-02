@@ -1,17 +1,17 @@
 {% extends 'base.html' %}
 
-{% block title %}
-Menu
-{% endblock %}
+<!-- Menu Section -->
+
+{% block title %} Menu {% endblock %}
 
 {% block content %}
-<!-- First div for displaying user posts -->
-<div id="menu-container" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-20 bg-gray-500 rounded-xl justify-center">
+<!-- Container for displaying user posts -->
+<div id="menu-container" class="max-w-screen-lg mx-auto mt-20 bg-gray-500 rounded-xl">
 
     <!-- Loop through posts -->
     {% for post in posts %}
         <!-- Individual post card -->
-        <div class="rounded-md bg-white shadow-md overflow-hidden justify-center">
+        <div class="rounded-md bg-white shadow-md overflow-hidden mb-4">
             <!-- User information -->
             <div class="flex items-center p-4 border-b border-gray-200">
                 <img class="w-10 h-10 rounded-full mr-4" src="{{ post.user.userprofile.profile.url }}" alt="{{ post.user.username }}">

@@ -29,10 +29,10 @@
 
         {% if request.user.is_authenticated %}
             <p class="px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-teal-700">Welcome {{ request.user.username }}</p>
-            <a href="#" class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-gray-700">Log Out</a>
+            <a href="{% url 'logout' %}" class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-gray-700">Log Out</a>
         {% else %}
             <a href="#" class="px-6 py-3 text-lg font-semibold bg-green-500 text-white rounded-xl hover:bg-teal-700">Sign Up</a>
-            <a href="#" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Log In</a>
+            <a href="{% url 'login' %}" class="px-6 py-3 text-lg font-semibold bg-gray-500 text-white rounded-xl hover:bg-gray-700">Log In</a>
         {% endif %}
     </div>
 </nav>
