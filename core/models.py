@@ -4,7 +4,7 @@ from stdimage.models import StdImageField
 
 
 class UserProfile(models.Model):
-    user = models.CharField(User, max_length=30)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = StdImageField(verbose_name='Image', upload_to='media', variations={
                             "thumb": {"width": 100, 'height': 100, 'crop': False}})
     created_on = models.DateTimeField(auto_now_add=True)
@@ -14,7 +14,8 @@ class UserProfile(models.Model):
 
 
 class Post(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="posts")
+    id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     image = StdImageField(verbose_name='Image', upload_to='media', variations={
                             "thumb": {"width": 225, 'height': 225, 'crop': False}})
     title = models.CharField(name="title", max_length=100)
@@ -23,8 +24,10 @@ class Post(models.Model):
 
 
 class Draft(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='draft_images')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="drafts")
+    title = models.CharField(max_length=100, name="title", verbose_name="title")
+    image = StdImageField(verbose_name='Image', upload_to='draft_images', variations={
+        "thumb": {"width": 225, 'height': 225, 'crop': False}}, null=True, blank=True)
     content = models.TextField()
     created_on = models.DateTimeField(auto_now_add=True)
 

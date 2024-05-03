@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Post
+from .models import Post, Draft
 
 
 class LoginForm(AuthenticationForm):
@@ -42,13 +42,35 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ['title', 'image', 'content']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'placeholder': 'Title',
+                'class': 'w-full py-4 px-6 rounded-xl'
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl'
+            }),
+            'content': forms.Textarea(attrs={
+                'placeholder': 'Content',
+                'class': 'w-full py-4 px-6 rounded-xl'
+            }),
+        }
 
-    title = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Title',
-        'class': 'w-full py-4 px-6 rounded-xl'
-    }))
-    image = forms.ImageField()
-    content = forms.CharField(widget=forms.Textarea(attrs={
-        'placeholder': 'Content',
-        'class': 'w-full py-4 px-6 rounded-xl'
-    }))
+
+class DraftForm(forms.ModelForm):
+    class Meta:
+        model = Draft
+        fields = ['title', 'image', 'content']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'placeholder': 'Title',
+                'class': 'w-full py-4 px-6 rounded-xl'
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'w-full py-4 px-6 rounded-xl'
+            }),
+            'content': forms.Textarea(attrs={
+                'placeholder': 'Content',
+                'class': 'w-full py-4 px-6 rounded-xl'
+            }),
+        }

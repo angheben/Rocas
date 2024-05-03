@@ -55,14 +55,13 @@ class CreatePostView(CreateView):
             draft.is_draft = True
             draft.user = self.request.user
             draft.save()
-            messages.success(self.request, "Draft saved successfully")
+            messages.success(self.request, message="Draft saved successfully")
             return redirect(self.success_url)
         else:
-            # Create new post
             post = form.save(commit=False)
             post.user = self.request.user
             post.save()
-            messages.success(self.request, "Post created successfully")
+            messages.success(self.request, message="Post created successfully")
             return super().form_valid(form)
 
     def form_invalid(self, form):
