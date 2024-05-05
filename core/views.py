@@ -1,11 +1,12 @@
-from django.views.generic import TemplateView, UpdateView, DeleteView, CreateView, RedirectView, FormView
-from .models import Post
+from django.views.generic import TemplateView, UpdateView, DeleteView, CreateView, RedirectView, FormView, View
+from .models import Post, Draft, Comment
 from django.contrib.auth import logout, login, authenticate
 from django.urls import reverse_lazy
-from .forms import SignupForm, LoginForm, PostForm
+from .forms import SignupForm, LoginForm, PostForm, DraftForm
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class MenuView(TemplateView):
@@ -13,31 +14,13 @@ class MenuView(TemplateView):
     This class will serve to display the menu page of the application
     """
     template_name = "menu.html"
+    model = Post
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Retrieve all posts ordered by creation date
-        posts = Post.objects.all().order_by('-created_on')
+        posts = Post.objects.filter(is_published=True).order_by('-created_on')
         context['posts'] = posts
         return context
-
-
-class UpdatePostView(UpdateView):
-    """
-    This class will serve users to update information in their posts
-    """
-    template_name = "update.html"
-    model = Post
-    fields = ['image', 'title', 'content']
-
-
-class DeletePostView(DeleteView):
-    """
-    This class will serve to delete posts and redirect users to the menu
-    """
-    template_name = "delete.html"
-    model = Post
-    url = reverse_lazy("menu")
 
 
 class CreatePostView(CreateView):
@@ -49,14 +32,18 @@ class CreatePostView(CreateView):
     success_url = reverse_lazy('menu')
 
     def form_valid(self, form):
-        if 'save_draft' in self.request.POST:
+        if self.request.POST.get('submit_type') == 'draft':
             # Save as draft
-            draft = form.save(commit=False)
-            draft.is_draft = True
-            draft.user = self.request.user
-            draft.save()
-            messages.success(self.request, message="Draft saved successfully")
-            return redirect(self.success_url)
+            draft_form = DraftForm(self.request.POST, self.request.FILES)  # Use DraftForm for draft
+            if draft_form.is_valid():
+                draft = draft_form.save(commit=False)
+                draft.user = self.request.user
+                draft.save()
+                messages.success(self.request, message="Draft saved successfully")
+                return redirect(reverse_lazy("profile"))
+            else:
+                messages.error(self.request, message="Invalid draft form data")
+                return self.form_invalid(form)
         else:
             post = form.save(commit=False)
             post.user = self.request.user
@@ -93,7 +80,7 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         """
-        This function is called when the user does the login correctly
+        This function is called when the user does the login correctly and generate a message case not
         """
         # Authenticate the user using the form data
         username = form.cleaned_data['username']
@@ -105,7 +92,6 @@ class LoginView(FormView):
             messages.success(self.request, "Login successful")
             return super().form_valid(form)
         else:
-            # If authentication fails, display an error message
             messages.error(self.request, "Invalid username or password")
             return self.form_invalid(form)
 
@@ -139,3 +125,105 @@ class SignUpView(FormView):
         messages.error(self.request, message="Invalid information")
         return super().form_invalid(form)
 
+
+class ProfileView(TemplateView):
+    """
+    This class will serve to display the posts and drafts from users, also to update and delete them
+    """
+    template_name = "profile.html"
+
+    def get_context_data(self, **kwargs):
+        """
+        This method it's to display the posts from users
+        """
+        context = super().get_context_data(**kwargs)
+        # Filter posts by the logged-in user
+        user_posts = Post.objects.filter(user=self.request.user).order_by('-created_on')
+        context['user_posts'] = user_posts
+        return context
+
+
+class UpdatePostView(UpdateView):
+    """
+    This class will serve users to update information in their posts
+    """
+    template_name = "update_post.html"
+    model = Post
+    fields = ['image', 'title', 'content']
+    success_url = reverse_lazy('profile')
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+class DeletePostView(DeleteView):
+    """
+    This class will serve to delete posts and redirect users to the menu
+    """
+    model = Post
+    success_url = reverse_lazy("menu")
+
+
+class DraftsView(TemplateView):
+    """
+    This class will serve to display draft posts
+    """
+    template_name = "drafts.html"
+    model = Draft
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        drafts = Draft.objects.all().order_by('-created_on')
+        context['drafts'] = drafts
+        return context
+
+
+class UpdateDraftView(UpdateView):
+    """
+    This class serves to update drafts
+    """
+    template_name = "update_draft.html"
+    model = DraftForm
+    fields = ['title', 'image', 'content']
+    success_url = reverse_lazy('drafts')
+
+    def form_valid(self, form):
+        if 'post_draft' in self.request.POST:
+            # Save the draft as a post
+            post = form.save(commit=False)
+            post.user = self.request.user
+            post.save()
+            self.object.delete()
+            return redirect('menu')
+        else:
+            return super().form_valid(form)
+
+
+class DeleteDraftView(DeleteView):
+    model = Draft
+    success_url = reverse_lazy("drafts")
+
+
+class AddCommentView(View):
+    def post(self, request, post_id):
+        post = Post.objects.get(pk=post_id)
+        body = request.POST.get('body')
+        comment = Comment.objects.create(post=post, user=request.user, body=body)
+        return redirect('menu')
+
+
+class CommentUpdateView(LoginRequiredMixin, UpdateView):
+    model = Comment
+    template_name = 'edit_comment.html'
+    fields = ['body']
+    success_url = '/'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(user=self.request.user)
+
+
+class CommentDeleteView(DeleteView):
+    model = Comment
+    template_name = 'confirm_delete_comment.html'
+    success_url = reverse_lazy('menu')

@@ -1,0 +1,40 @@
+<!-- update_post.html -->
+
+{% extends 'base.html' %}
+
+{% block title %} Update Post {% endblock %}
+
+{% block content %}
+<div class="max-w-screen-lg mx-auto mt-20">
+    <h2 class="text-2xl font-semibold mb-4">Update Post</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="id_image" class="block text-sm font-semibold mb-2">Image:</label>
+            <img src="{{ object.image.thumb.url }}" alt="{{ object.title }}" class="">
+            <input type="file" name="image" id="id_image" class="block w-full" accept="image/*">
+        </div>
+        <div class="mb-4">
+            <label for="id_title" class="block text-sm font-semibold mb-2">Title:</label>
+            <input type="text" name="title" id="id_title" value="{{ object.title }}" class="block w-full">
+        </div>
+        <div class="mb-4">
+            <label for="id_content" class="block text-sm font-semibold mb-2">Content:</label>
+            <textarea name="content" id="id_content" class="block w-full">{{ object.content }}</textarea>
+        </div>
+        <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-700">Update</button>
+        <button type="button" onClick="confirmDelete()" class="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-blue-700">Delete</button>
+    </form>
+    <form id="delete-form" action="{% url 'delete_post' object.pk %}" method="post" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{% url 'profile' %}">
+    </form>
+    <script>
+    function confirmDelete() {
+        if (confirm("Are you sure you want to delete this post?")) {
+            document.getElementById('delete-form').submit();
+        }
+    }
+</script>
+</div>
+{% endblock %}

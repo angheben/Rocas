@@ -6,21 +6,23 @@
 
 {% block content %}
 <!-- Container for displaying user posts -->
-<div id="menu-container" class="max-w-screen-lg mx-auto mt-20 bg-gray-500 rounded-xl">
+<div id="menu-container" class="max-w-screen-lg mx-auto mt-20 bg-gray-300 rounded-xl">
 
     <!-- Loop through posts -->
     {% for post in posts %}
         <!-- Individual post card -->
-        <div class="rounded-md bg-white shadow-md overflow-hidden mb-4">
+        <div class="rounded-md bg-white shadow-md overflow-hidden m-4 mt-4 mb-4">
             <!-- User information -->
             <div class="flex items-center p-4 border-b border-gray-200">
-                <img class="w-10 h-10 rounded-full mr-4" src="{{ post.user.userprofile.profile.url }}" alt="{{ post.user.username }}">
+                <img class="w-10 h-10 rounded-xl justify-center mr-4" src="{{ post.user.userprofile.profile.url }}" alt="{{ post.user.username }}">
                 <div>
                     <h3 class="text-lg font-semibold">{{ post.user.username }}</h3>
                 </div>
             </div>
             <!-- Post image -->
-            <img style="width: 100%; height: auto;" src="{{ post.image.url }}" alt="{{ post.title }}">
+            <div class="flex justify-center">
+                <img class="" src="{{ post.image.thumb.url }}" alt="{{ post.title }}">
+            </div>
             <!-- Post title -->
             <div class="p-4">
                 <h3 class="text-lg font-semibold">{{ post.title }}</h3>
@@ -32,6 +34,15 @@
                     <div class="flex items-center mt-2">
                         <img class="w-8 h-8 rounded-full mr-2" src="{{ comment.user.userprofile.profile.url }}" alt="{{ comment.user.username }}">
                         <p>{{ comment.body }}</p>
+                        {% if comment.user == request.user %}
+                            <div class="ml-auto flex">
+                                <a href="{% url 'edit_comment' comment.pk %}" class="text-blue-500 font-semibold hover:underline mr-2">Edit</a>
+                                <form action="{% url 'delete_comment' comment.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="text-red-500 font-semibold hover:underline">Delete</button>
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>

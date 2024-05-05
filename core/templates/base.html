@@ -9,7 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
         <!-- Section Favicon -->
-        <link rel="icon" href="{% static 'images/favicon.jpg'%}">
+        <link rel="icon" href="{% static 'img/favicon.jpg'%}">
 
         <!-- Section Title -->
         <title>{% block title %}{% endblock %} Blog </title>
@@ -17,7 +17,9 @@
 
     <body>
         <nav class="py-6 flex justify-between items-center border-b border-gray-200 fixed top-0 w-full bg-white z-10">
-        <a href="/" class="text-xl font-semibold ml-8">BLOG</a>
+        <a href="{% url 'menu' %}" class="ml-8">
+            <img src="{% static 'img/favicon.jpg' %}" alt="Blog Logo" class="h-12 rounded-xl">
+        </a>
 
     <div class="flex items-center space-x-6 mr-6">
 
@@ -29,7 +31,7 @@
 
         {% if request.user.is_authenticated %}
             <a href="{% url 'post' %}" class="px-6 py-3 text-lg font-semibold bg-yellow-500 text-white rounded-xl hover:bg-gray-700">Create Post</a>
-            <p class="px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-teal-700">Welcome {{ request.user.username }}</p>
+            <a href="{% url 'profile' %}" class="px-6 py-3 text-lg font-semibold bg-blue-500 text-white rounded-xl hover:bg-gray-700">Profile</a>
             <a href="{% url 'logout' %}" class="px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl hover:bg-gray-700">Log Out</a>
         {% else %}
             <a href="{% url 'signup' %}" class="px-6 py-3 text-lg font-semibold bg-green-500 text-white rounded-xl hover:bg-teal-700">Sign Up</a>
@@ -43,17 +45,8 @@
             {% endblock %}
         </div>
 
-        <footer class="py-6 px-6 bg-gray-300 fixed bottom-0 left-0 w-full">
-        <!--
-            <div>
-                <ul class="space-y-2">
-                    <li><a href="#" class="text-lg text-white hover:text-teal-700">About</a></li>
-                    <li><a href="#" class="text-lg text-white hover:text-teal-700">Contact</a></li>
-                    <li><a href="#" class="text-lg text-white hover:text-teal-700">Privacy Policy</a></li>
-                    <li><a href="#" class="text-lg text-white hover:text-teal-700">Terms of Use</a></li>
-                </ul>
-            </div>
-        -->
+        <footer class="py-2 px-2 bg-gray-300 fixed bottom-0 left-0 w-full flex justify-center items-center">
+            <h3 class="text-black">Copyright by Vitor Spricigo Angheben</h3>
         </footer>
     </body>
 </html>
