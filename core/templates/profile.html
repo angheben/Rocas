@@ -7,9 +7,26 @@
 <div id="profile-container" class="max-w-screen-lg mx-auto mt-20 bg-gray-300 rounded-xl p-6">
 
     <div class="flex items-center justify-between mb-4">
-        <h2 class="text-2xl font-semibold">Your Posts</h2>
+        <h2 class="text-2xl font-semibold">Your Profile</h2>
         <!-- Drafts button -->
         <a href="{% url 'drafts' %}" class="px-4 py-2 bg-yellow-500 text-white font-semibold rounded hover:bg-yellow-700">View Drafts</a>
+    </div>
+
+    <!-- Display profile picture -->
+    <div class="flex items-center p-4 border-b border-gray-200">
+        <img class="w-10 h-10 rounded-xl justify-center mr-4" src="{{ request.user.userprofile.profile.url }}" alt="{{ request.user.username }}">
+        <div>
+            <h3 class="text-lg font-semibold">{{ request.user.username }}</h3>
+        </div>
+        <!-- Edit profile picture -->
+        <div class="ml-auto">
+            <form method="post" enctype="multipart/form-data" action="{% url 'edit_profile_picture' %}">
+                {% csrf_token %}
+                <input type="file" name="profile_picture" id="id_profile_picture" style="display: none;">
+                <label for="id_profile_picture" class="text-blue-500 font-semibold hover:underline cursor-pointer">Edit</label>
+                <button type="submit" style="display: none;"></button>
+            </form>
+        </div>
     </div>
 
     <!-- Loop through user's posts -->

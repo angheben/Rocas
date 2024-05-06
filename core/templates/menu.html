@@ -46,6 +46,14 @@
                     </div>
                 {% endfor %}
             </div>
+            <!-- Comment form -->
+            <div class="p-4">
+                <form action="{% url 'add_comment' post.pk %}" method="post">
+                    {% csrf_token %}
+                    <textarea name="body" rows="3" class="w-full border rounded-md p-2"></textarea>
+                    <button type="submit" class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Add Comment</button>
+                </form>
+            </div>
         </div>
     {% endfor %}
 </div>

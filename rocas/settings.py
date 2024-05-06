@@ -65,10 +65,26 @@ WSGI_APPLICATION = 'rocas.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'rocas_database',
+        'USER': 'vitor',
+        'PASSWORD': 'gabi2025',
+        'HOST': 'rocasdatabase.cxmismossa17.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
+
+# S3 configuration
+
+AWS_ACCESS_KEY_ID = 'AKIA47CRVD2GJY5MJRIO'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'rocas-s3'
+AWS_S3_SIGNATURE_NAME = 's3v4'
+AWS_S3_REGION_NAME = 'us-east-2'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERITY = True
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 
 # Password validation

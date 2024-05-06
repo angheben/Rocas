@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import (MenuView, CreatePostView, DeletePostView, UpdatePostView, LogoutView, LoginView, SignUpView, ProfileView
-                    , DraftsView, UpdateDraftView, DeleteDraftView, AddCommentView, CommentDeleteView, CommentUpdateView)
+from .views import (MenuView, CreatePostView, DeletePostView, UpdatePostView, LogoutView, LoginView, SignUpView,
+                    ProfileView, DraftsView, UpdateDraftView, DeleteDraftView, AddCommentView, CommentDeleteView,
+                    CommentUpdateView, EditProfilePictureView)
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -21,6 +22,7 @@ urlpatterns = [
     path("profile/", ProfileView.as_view(template_name="profile.html"), name="profile"),
     path("profile/post/<int:pk>", UpdatePostView.as_view(template_name="update_post.html"), name="update_post"),
     path("profile/post/delete/<int:pk>", DeletePostView.as_view(template_name="delete_post.html"), name="delete_post"),
+    path('profile/edit-profile-picture/', EditProfilePictureView.as_view(), name='edit_profile_picture'),
 
     # Paths for Drafts
     path("drafts/", DraftsView.as_view(template_name="drafts.html"), name="drafts"),  # Add this line
