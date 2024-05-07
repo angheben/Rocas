@@ -10,4 +10,3 @@ The project looks like that:
 ![pic2](https://github.com/angheben/Rocas/assets/113387966/0c535a2d-5dca-417e-a745-47ee1cb287dc)
 ![pic3](https://github.com/angheben/Rocas/assets/113387966/628b3eb1-b62d-46af-b091-053d4f20fcbf)
 ![pic4](https://github.com/angheben/Rocas/assets/113387966/0d4b9d91-f10c-4a30-96cb-59acf82089e8)
-![pic5](https://github.com/angheben/Rocas/assets/113387966/0c4d7043-d3c1-4c71-a34e-5e7e9f1ca5cc)
