@@ -14,7 +14,12 @@
 
     <!-- Display profile picture -->
     <div class="flex items-center p-4 border-b border-gray-200">
-        <img class="w-10 h-10 rounded-xl justify-center mr-4" src="{{ request.user.userprofile.profile.url }}" alt="{{ request.user.username }}">
+        {% if request.user.userprofile.profile %}
+            <img class="w-10 h-10 rounded-xl justify-center mr-4" src="{{ request.user.userprofile.profile.thumbnail.url }}" alt="{{ request.user.username }}">
+        {% else %}
+            <!-- If the user does not have a profile picture, display a default profile picture -->
+            <img class="w-10 h-10 rounded-xl justify-center mr-4" src="/static/img/profile_pictures/profile.png" alt="Default Profile Picture">
+        {% endif %}
         <div>
             <h3 class="text-lg font-semibold">{{ request.user.username }}</h3>
         </div>

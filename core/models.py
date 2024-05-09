@@ -6,7 +6,7 @@ from stdimage.models import StdImageField
 class UserProfile(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     profile = StdImageField(verbose_name='Image', upload_to='media', variations={
-                            "thumb": {"width": 200, 'height': 200, 'crop': False}})
+                            "thumb": {"width": 20, 'height': 20, 'crop': False}})
     created_on = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
